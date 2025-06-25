@@ -1,20 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Nous Autres – Le début de l’aube{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<header class="hero">
+  <img src="/images/testaccueil1.jpg" class="hero-bg" alt="Fond d'accueil">
+  <div class="overlay">
+    <div class="hero-text">
+      <h1 class="fade-in-delay logo-title title-intro intro-line">Et parce que, dans cette nuit…</h1>
+      <p class="fade-in-late logo-title sub-line">pourrions bien être<br>le début de l’aube.</p>
+      <a href="#narration" class="btn-scroll fade-in-last">Commencer</a>
+    </div>
+  </div>
+</header>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<main id="narration" class="narrative">
+  <section>
+    <h2>Un monde s’essouffle</h2>
+    <p>Nous le sentons tous, confusément : ce que nous appelons "normalité" s’effondre. Le lien s’effrite, le vivant s’asphyxie, et l’humain s’oublie.</p>
+  </section>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/afere/Documents/NousAutres/Nous Autres/Plateforme/nous-autres/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/afere/Documents/NousAutres/Nous Autres/Plateforme/nous-autres/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+  <section>
+    <h2>Un autre peut commencer</h2>
+    <p>Ce nouveau monde ne se décrète pas. Il se tisse, pas à pas. Il ne viendra pas d’en haut. Il naîtra entre nous.</p>
+  </section>
+
+  <section>
+    <h2>Nous Autres</h2>
+    <p>Pas un parti. Pas un dogme. Un espace de conscience. Une manière d’agir sans trahir ce qui compte. Un appel à construire sans dominer.</p>
+  </section>
+
+  <section>
+    <h2>Une promesse partagée</h2>
+    <p>Retisser les liens. Redonner sens. Réapprendre à faire ensemble. Pour le vivant. Pour les autres. Pour ce qui vient.</p>
+  </section>
+</main>
 {% endblock %}
