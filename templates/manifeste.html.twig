@@ -1,0 +1,66 @@
+{# templates/manifeste.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Nous Autres – Le Manifeste{% endblock %}
+
+{% block body %}
+<main class="manifeste">
+  <section class="intro">
+    <h1>Le Manifeste</h1>
+    <p class="sous-titre">Un appel à l'éveil collectif et à la transformation profonde</p>
+  </section>
+
+  <section>
+    <p>Nous, peuple de ce monde, appelons à l'éveil.</p>
+    <p>Nous nous levons aujourd'hui, non pas en tant qu'individus séparés, mais en tant qu'une seule voix, une seule conscience collective, unie par la nécessité de repenser la société, ses valeurs, ses institutions, et sa relation avec la nature. Nous refusons la division et la fragmentation. Nous cherchons la solidarité, l'égalité, et la dignité du vivant dans un monde où ces principes se sont trop souvent dissipés.</p>
+    <p>Nous avons tous en nous une étincelle d’humanité, un potentiel qui attend d’être réveillé. Ce n'est pas la lutte qui nous définira, mais notre capacité à construire ensemble.</p>
+  </section>
+
+  <section>
+    <h2>Une société plus juste</h2>
+    <p>Nous croyons en une société où chaque individu a une place égale, sans distinction de race, de genre, de statut social ou d'origine. Un monde où la justice sociale prime sur la compétition, où l’éducation, la santé, et les ressources sont accessibles à tous, sans condition. Nous défendons une économie qui soutient la solidarité et la durabilité, et non pas l’exploitation.</p>
+  </section>
+
+  <section>
+    <h2>Une économie au service de l'humain et de la planète</h2>
+    <p>L'économie actuelle est un système conçu pour produire, pour accumuler au détriment du vivant et de l’environnement. Nous rejetons ce modèle de croissance infinie. Nous voulons une économie qui sert les besoins fondamentaux des êtres humains, sans épuiser les ressources de la Terre. Nous prônons une économie circulaire, fondée sur le respect de la nature, où la redistribution équitable et la solidarité sont les moteurs du développement.</p>
+  </section>
+
+  <section>
+    <h2>La préservation de la Terre et des vivants</h2>
+    <p>Nous savons que la Terre est en danger. Le climat, la biodiversité, et les écosystèmes sont en péril, non par la volonté de la nature, mais à cause de l’inconséquence de nos actions. Nous croyons qu'il est possible de réconcilier l'humain avec la Terre. Nous devons repenser nos modes de consommation, produire et vivre de manière durable, prendre soin de nos ressources naturelles et de tous les vivants avec lesquels nous partageons cette planète.</p>
+  </section>
+
+  <section>
+    <h2>Une gouvernance participative et décentralisée</h2>
+    <p>La démocratie n’est pas seulement un droit de vote tous les cinq ans. Nous croyons à une gouvernance participative, où chaque citoyen a une voix, où les décisions sont prises par ceux qui en sont directement affectés. Nous visons une société où les institutions politiques, économiques et sociales ne sont pas des instruments de pouvoir, mais des leviers d’action collective, transparents et équitables.</p>
+  </section>
+
+  <section>
+    <h2>Une éducation qui émancipe</h2>
+    <p>L’éducation ne doit pas être un simple outil de reproduction sociale, mais une véritable clé de l’émancipation. Elle doit permettre à chacun de développer son potentiel unique, d’éveiller sa conscience collective, et de participer activement à la construction d’un monde meilleur. Nous voulons une éducation qui développe l’intelligence émotionnelle, la pensée critique, et le sens du collectif, en réconciliant l’humain avec son environnement.</p>
+  </section>
+
+  <section>
+    <h2>L'IA comme catalyseur de l'évolution</h2>
+    <p>L'intelligence artificielle, bien utilisée, ne doit pas être une menace pour l'humanité, mais un outil qui la soutient. Elle peut être un catalyseur pour l’évolution collective, permettant d'optimiser les ressources, de réduire les inégalités, et de développer une gouvernance transparente. Mais elle doit être au service de l'humanité, pas l'inverse. C'est pourquoi nous soutenons une utilisation éthique et participative de l'IA, pour qu'elle contribue à la transformation de nos sociétés.</p>
+  </section>
+
+  <section>
+    <h2>Vers un changement radical mais profond</h2>
+    <p>Nous ne parlons pas de réformes superficielles, mais d’un changement profond dans notre manière de penser, de vivre et de nous organiser. Ce changement doit partir des racines, de l’intérieur de chacun d'entre nous, et s’étendre à l’échelle collective. Nous ne croyons pas en une utopie, mais en un progrès collectif qui ne détruit pas ce qu’il promet de sauver.</br></br>Nous sommes la génération du réveil, et ensemble, nous pouvons faire émerger cette nouvelle ère.</p>
+  </section>
+
+  <section class="citation">
+    <blockquote>
+      <p><em>"Et parce que, dans cette nuit,<br>
+      Nous autres pourrions bien être<br>
+      Le début de l’aube."</em></p>
+    </blockquote>
+  </section>
+  <section class="cta-pdf">
+  <a href="{{ asset('documents/manifeste-nous-autres.pdf') }}" class="cta-button" download>
+    Télécharger le manifeste (PDF)
+  </a>
+</section>
+</main>
+{% endblock %}

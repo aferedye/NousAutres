@@ -3,11 +3,70 @@ html {
 }
 
 body {
-  margin: 0;
-  background-color: #0f0f0f; /* noir doux / végétal nocturne */
   font-family: 'Segoe UI', sans-serif;
-  color: #fdfdfd;
   line-height: 1.6;
+  overflow-x: hidden; /* Empêche le débordement horizontal */
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #fdfcf9;
+}
+
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5vw; /* 🔁 padding fluide, évite débordement */
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%; /* ✅ remplace 100vw */
+    box-sizing: border-box; /* ✅ important */
+}
+
+.logo a {
+    font-size: 20px;
+    text-decoration: none;
+    color: #4a4a4a;
+    font-weight: bold;
+}
+
+.nav-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.nav-menu li {
+    margin-left: 20px;
+    white-space: nowrap;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #4a4a4a;
+    font-weight: 500;
+}
+
+.nav-menu a:hover {
+    color: #7FBF7F;
+}
+
+nav a.active {
+  color: #7FBF7F; /* ou n’importe quelle couleur d’activation */
+  font-weight: bold;
+  border-bottom: 2px solid #7FBF7F; /* optionnel : soulignement */
 }
 
 .hero {
@@ -17,28 +76,27 @@ body {
   overflow: hidden;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-direction: column;
-  justify-content: center;
-  background: #0f1a14;
   margin: 0;
-  padding-top: 1vh;
+  padding: 5vh 0;
   background-size: cover;
+  background-color: #0f1a14;
   background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  animation: fadeInHero 2s ease forwards;
+  animation-delay: 0.2s;
 }
 
 .hero-text {
-  text-align: center;
-  position: relative;
-  padding: 1.9rem;
-  color: #f4f4f4;
-  margin: 0 auto;
-  z-index: 2;
-  max-width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  top: -30vh;
+  gap: 2.5rem;
+  padding: 2rem;
+  margin: 0;
+  transform: translateY(-2vh);
 }
 
 .intro-line {
@@ -51,14 +109,19 @@ body {
   margin: 0;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
+
 .sub-line {
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   font-weight: 300;
   line-height: 1.4;
-  color: #ffffffdd;
-  margin: 0;
-  margin-bottom: 1rem;
+  color: #f9f4e8;
+  background: rgba(15, 15, 15, 0.25);
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
+
 .btn-scroll {
   background: transparent;
   border: 1.5px solid #ffffffaa;
@@ -69,13 +132,13 @@ body {
   font-weight: 500;
   font-size: 0.9rem;
   transition: all 0.3s ease;
-  margin: 0 auto;
 }
+
 .btn-scroll:hover {
   background-color: #ffffff22;
-  color: #fff;
   border-color: #ffffffdd;
 }
+
 .logo-title {
   font-family: 'Cinzel', serif;
   font-weight: 400;
@@ -97,14 +160,13 @@ body {
 .hero-bg {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 51%;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* affiche l’image entière */
-  transform: translate(-50%, -50%);
+  object-fit: cover; /* ← adapte l’image à tout l’écran */
+  transform: translate(-50%, -52%) scale(1.03); /* ← petit zoom-out visuel + recentrage */
   z-index: 1;
   pointer-events: none;
-
   mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
   -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
 }
@@ -118,15 +180,21 @@ body {
   width: 110%;
   height: 110%;
   background: url('/images/accueil.jpg') center center / cover no-repeat;
-  filter: blur(60px) brightness(1.4) saturate(1.2);
+  filter: blur(45px) brightness(1.3) saturate(1.1);
   z-index: 0;
   opacity: 0.7;
   animation: breathe 20s ease-in-out infinite;
 }
 
 .overlay {
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+  width: 90%;
+  max-width: 900px;
 }
 
 .hero-text h1 {
@@ -153,25 +221,48 @@ body {
   background: #ffffff55;
 }
 
-main.narrative {
-  padding: 5vh 10vw;
-  background: #111;
+/* Bloc global */
+#narration {
+    padding: 120px 8vw;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Georgia', serif;
+    color: #333;
+    background-color: transparent;
 }
 
-main.narrative section {
-  padding: 8vh 0;
-  border-bottom: 1px solid #444;
+/* Chaque section narrative */
+#narration section {
+    margin-bottom: 80px;
+    padding: 0 10px;
+    text-align: center;
+    background: transparent;
 }
 
-main.narrative h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #f0f0f0;
+/* Titres poétiques */
+#narration h2 {
+    font-size: 2.2em;
+    font-weight: 600;
+    color: #4B8F8C; /* vert/gris doux, tu peux le changer */
+    margin-bottom: 20px;
+    font-family: 'Cormorant Garamond', serif;
 }
 
-main.narrative p {
-  font-size: 1.2rem;
-  color: #ccc;
+/* Paragraphe lisible */
+#narration p {
+    font-size: 18px;
+    line-height: 1.7;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #222;
+    opacity: 0.9;
+}
+
+
+
+.cta-block {
+  text-align: center;
+  margin-bottom: 2vh;
 }
 
 .fade-in-delay, .fade-in-late, .fade-in-last {
@@ -207,12 +298,9 @@ main.narrative p {
   opacity: 0;
   animation: fadeInHero 2s ease forwards;
   animation-delay: 0.2s;
-}
-
-@keyframes fadeInHero {
-  to {
-    opacity: 1;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .narrative section {
@@ -227,6 +315,205 @@ main.narrative p {
   transform: translateY(0);
 }
 
+/* Call to action */
+.call-to-action {
+  text-align: center;
+  margin: 3rem 0 5rem;
+}
+
+.cta-button {
+  background-color: #222; 
+  color: #fdfcf9;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: #444;
+  transform: scale(1.05);
+}
+
+/* Arbre de vie */
+
+.arbre-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.arbre-svg {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+}
+
+.leaf:hover {
+    fill: #5ca85c;
+    cursor: pointer;
+}
+
+.bouton-creer-cercle {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.bouton-creer-cercle a {
+    background: #7FBF7F;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+.bouton-creer-cercle a:hover {
+    background: #5ca85c;
+}
+
+/* Manifeste */
+.manifeste {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.manifeste h2 {
+  margin-top: 3.5rem;
+  font-size: 1.6rem;
+  color: #222;
+}
+
+.manifeste .intro {
+  text-align: center;
+  margin-bottom: 2rem;
+  margin-top: 5rem;
+}
+
+.manifeste .sous-titre {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.manifeste blockquote {
+  margin-top: 3rem;
+  font-style: italic;
+  color: #444;
+  text-align: center;
+}
+
+.manifeste p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.manifeste section {
+  margin-bottom: 3rem;
+}
+
+.cta-pdf {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.cta-button {
+  background-color: #222;
+  color: #fdfcf9;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: #444;
+  transform: scale(1.05);
+}
+
+/* Charte */
+.charte {
+  max-width: 800px;
+  margin: 5rem auto 10rem auto;
+  padding: 2rem;
+  background-color: #fdfdfd;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  line-height: 1.7;
+}
+
+.charte h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.charte h3 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  border-left: 4px solid #444;
+  padding-left: 1rem;
+  color: #111;
+}
+
+.charte p {
+  margin-top: 1rem;
+  font-size: 1.05rem;
+}
+
+.charte ul {
+  margin: 1rem 0 2rem 1.5rem;
+  padding-left: 1.2rem;
+}
+
+.charte ul li {
+  margin-bottom: 0.5rem;
+}
+
+.charte strong {
+  color: #000;
+}
+
+.charte em {
+  color: #666;
+}
+
+.charte .titre-charte {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.charte .titre-charte h2 {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background-color: #7FBF7F;
+  color: #fff;
+  font-size: 2rem;
+  border-radius: 4px;
+}
+
+.charte .titre-charte p {
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: #555;
+}
+
+
+
+/* Animation et transitions */
+
 
 @keyframes breathe {
   0%   { transform: scale(1); }
@@ -240,8 +527,66 @@ main.narrative p {
   100% { background-position: 0%; }
 }
 
+@keyframes fadeInHero {
+  to {
+    opacity: 1;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .hero {
     padding-top: 20vh;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .cta-block {
+    position: static;
+    margin-top: 3vh;
+  }
+  .charte {
+    padding: 1.5rem;
+    margin: 3rem 1rem;
+  }
+  .charte h2 {
+    font-size: 1.5rem;
+  }
+
+  .charte h3 {
+    font-size: 1.25rem;
+  }
+
+  .charte p,
+  .charte li {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .nav-header {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-menu ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-menu li {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .hero-text {
+    padding: 1rem;
+  }
+  
+  .hero-text h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-text p {
+    font-size: 1.2rem;
   }
 }

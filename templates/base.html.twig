@@ -14,8 +14,25 @@
         {% endblock %}
     </head>
 
-    <body>
-        {% block body %}{% endblock %}
+    <body> 
+        <header class="nav-header">
+            <div class="logo">
+                <a href="/">🌳 Nous Autres</a>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="{{ path('manifeste') }}" class="{% if app.request.attributes.get('_route') == 'manifeste' %}active{% endif %}">Le Manifeste</a></li>
+                    <li><a href="{{ path('charte') }}" class="{% if app.request.attributes.get('_route') == 'charte' %}active{% endif %}">Charte</a></li>
+                    <li><a href="{{ path('cercles') }}" class="{% if app.request.attributes.get('_route') == 'cercles' %}active{% endif %}">Cercles</a></li>
+                    <li><a href="{{ path('projets') }}" class="{% if app.request.attributes.get('_route') == 'projets' %}active{% endif %}">Projets</a></li>
+                    <li><a href="{{ path('creer-cercle') }}" class="{% if app.request.attributes.get('_route') == 'creer-cercle' %}active{% endif %}">Créer/Rejoindre</a></li>
+                    <li><a href="{{ path('contact') }}" class="{% if app.request.attributes.get('_route') == 'contact' %}active{% endif %}">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+        {% block body %}
+       
+        {% endblock %}
 
         {# Animation fade-in des sections en scroll (observer) #}
         <script>

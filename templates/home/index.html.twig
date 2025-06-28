@@ -3,16 +3,19 @@
 {% block title %}Nous Autres – Le début de l’aube{% endblock %}
 
 {% block body %}
-<header class="hero">
-  <img src="/images/testaccueil1.jpg" class="hero-bg" alt="Fond d'accueil">
+<section class="hero">
+  <img src="/images/accueil.jpg" class="hero-bg" alt="Fond d'accueil">
   <div class="overlay">
     <div class="hero-text">
       <h1 class="fade-in-delay logo-title title-intro intro-line">Et parce que, dans cette nuit…</h1>
-      <p class="fade-in-late logo-title sub-line">pourrions bien être<br>le début de l’aube.</p>
-      <a href="#narration" class="btn-scroll fade-in-last">Commencer</a>
+      <h2 class="fade-in-delay logo-title title-intro">Nous Autres</h2>
+        <div class="cta-block">
+          <p class="fade-in-late logo-title sub-line">pourrions bien être<br>le début de l’aube.</p>
+          <a href="#narration" class="btn-scroll fade-in-last">Commencer</a>
+        </div>
     </div>
   </div>
-</header>
+</section>
 
 <main id="narration" class="narrative">
   <section>
@@ -33,6 +36,9 @@
   <section>
     <h2>Une promesse partagée</h2>
     <p>Retisser les liens. Redonner sens. Réapprendre à faire ensemble. Pour le vivant. Pour les autres. Pour ce qui vient.</p>
+  </section>
+  <section class="call-to-action">
+    <a href="{{ path('manifeste') }}" class="cta-button">Et si ce n’était que le début ?</a>
   </section>
 </main>
 {% endblock %}
