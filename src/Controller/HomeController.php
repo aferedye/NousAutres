@@ -40,10 +40,10 @@ final class HomeController extends AbstractController
         return $this->render('projets.html.twig');
     }
 
-    #[Route('/creer-cercle', name: 'creer_cercle')]
+    #[Route('/creer-cercle', name: 'creer-cercle')]
     public function creerCercle(): Response
     {
-        return $this->render('creer_cercle.html.twig');
+        return $this->render('creer-cercle.html.twig');
     }
 
     #[Route('/contact', name: 'contact')]
