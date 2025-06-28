@@ -24,9 +24,10 @@
                     <li><a href="{{ path('manifeste') }}" class="{% if app.request.attributes.get('_route') == 'manifeste' %}active{% endif %}">Le Manifeste</a></li>
                     <li><a href="{{ path('charte') }}" class="{% if app.request.attributes.get('_route') == 'charte' %}active{% endif %}">Charte</a></li>
                     <li><a href="{{ path('cercles') }}" class="{% if app.request.attributes.get('_route') == 'cercles' %}active{% endif %}">Cercles</a></li>
+                    <li><a href="{{ path('arbre') }}" class="{% if app.request.attributes.get('_route') == 'arbre' %}active{% endif %}">🌳 Arbre vivant</a></li>
                     <li><a href="{{ path('projets') }}" class="{% if app.request.attributes.get('_route') == 'projets' %}active{% endif %}">Projets</a></li>
-                    <li><a href="{{ path('creer-cercle') }}" class="{% if app.request.attributes.get('_route') == 'creer-cercle' %}active{% endif %}">Créer/Rejoindre</a></li>
                     <li><a href="{{ path('contact') }}" class="{% if app.request.attributes.get('_route') == 'contact' %}active{% endif %}">Contact</a></li>
+                    
                 </ul>
             </nav>
         </header>
