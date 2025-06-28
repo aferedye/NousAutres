@@ -1,0 +1,9 @@
+# ➤ Type de modification (ajoute, corrige, met à jour, refacto, doc, etc.)
+# ➤ Résumé en une ligne :
+#
+
+# Exemple :
+# ajoute : section "Un autre peut commencer" dans la page d'accueil
+# corrige : bug d'affichage du menu mobile
+#
+# Les lignes commençant par # sont ignorées
