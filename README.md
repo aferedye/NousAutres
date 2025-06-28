@@ -1,4 +1,5 @@
 🌱 Nous Autres – Une plateforme vivante d’intelligence collective et de reliance humaine
+
 Nous Autres est une plateforme citoyenne libre et open source, pensée comme un espace d’expression, de construction et de reliance entre toutes celles et ceux qui souhaitent participer à l’émergence d’une société plus juste, consciente et durable.
 Elle ne se limite pas à un outil : c’est un lieu vivant, évolutif, où les idées, les savoirs, les expériences et les imaginaires se tissent ensemble pour donner naissance à des alternatives concrètes.
 
