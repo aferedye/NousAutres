@@ -26,21 +26,29 @@
 ## 📚 Arborescence du projet
 
 ├── templates/
+
 │ ├── base.html.twig
+
 │ ├── index.html.twig
+
 │ ├── manifeste.html.twig
+
 │ └── charte.html.twig
+
 ├── public/
+
 │ ├── css/
+
 │ │ └── styles.css
+
 │ ├── js/
+
 │ └── images/
+
 ├── src/Controller/
+
 │ └── HomeController.php
 
-yaml
-Copier
-Modifier
 
 ---
 
