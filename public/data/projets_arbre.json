@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": "projet_1",
+      "label": "Éducation populaire",
+      "theme": "éducation",
+      "territoire": "Bretagne",
+      "etat": "en cours"
+    },
+    {
+      "id": "projet_2",
+      "label": "Atelier éco-construction",
+      "theme": "écologie",
+      "territoire": "Occitanie",
+      "etat": "terminé"
+    },
+    {
+      "id": "projet_3",
+      "label": "Réseau d'entraide locale",
+      "theme": "solidarité",
+      "territoire": "Île-de-France",
+      "etat": "en réflexion"
+    },
+    {
+      "id": "projet_4",
+      "label": "Cantine sociale bio",
+      "theme": "alimentation",
+      "territoire": "Auvergne-Rhône-Alpes",
+      "etat": "en cours"
+    }
+  ],
+  "liens": [
+    {
+      "source": "projet_1",
+      "target": "projet_3"
+    },
+    {
+      "source": "projet_2",
+      "target": "projet_4"
+    },
+    {
+      "source": "projet_3",
+      "target": "projet_4"
+    }
+  ]
+}

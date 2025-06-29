@@ -1,32 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nous Autres - Arbre vivant{% endblock %}
+{% block title %}Arbre Vivant — Nous Autres{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles.css') }}">
+{% endblock %}
 
 {% block body %}
-<div class="arbre-container">
-    <svg viewBox="0 0 800 600" class="arbre-svg">
-        <!-- Tronc -->
-        <rect x="380" y="250" width="40" height="200" fill="#8B5A2B"/>
+<div class="page-arbre">
+    <h1>🌳 L’Arbre Vivant</h1>
+    <p>
+        Une visualisation organique des cercles, racines et engagements du mouvement <strong>Nous Autres</strong>.
+        Ici s’esquisse la structure vivante d’une conscience en germination.
+    </p>
 
-        <!-- Branches -->
-        <line x1="400" y1="250" x2="300" y2="150" stroke="#8B5A2B" stroke-width="10"/>
-        <line x1="400" y1="250" x2="500" y2="150" stroke="#8B5A2B" stroke-width="10"/>
+    <canvas id="treeCanvas" width="800" height="600"></canvas>
 
-        <!-- Feuilles interactives -->
-        <circle cx="300" cy="150" r="30" fill="#7FBF7F" class="leaf" onclick="location.href='/cercles'">
-            <title>Voir les cercles vivants</title>
-        </circle>
-        <circle cx="500" cy="150" r="30" fill="#7FBF7F" class="leaf" onclick="location.href='/projets'">
-            <title>Explorer les projets</title>
-        </circle>
-
-        <!-- Racines -->
-        <path d="M 390 450 Q 380 470 370 480" stroke="#654321" stroke-width="5" fill="none"/>
-        <path d="M 410 450 Q 420 470 430 480" stroke="#654321" stroke-width="5" fill="none"/>
-    </svg>
-
-    <div class="bouton-creer-cercle">
-        <a href="/creer-cercle">🌱 Rejoindre ou créer un cercle</a>
-    </div>
+    <a href="/cercles" class="arbre-btn">Explorer les cercles</a>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/arbre.js') }}" defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            startTree();
+        });
+    </script>
 {% endblock %}

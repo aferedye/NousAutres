@@ -338,40 +338,84 @@ nav a.active {
   transform: scale(1.05);
 }
 
-/* Arbre de vie */
-
-.arbre-container {
-    text-align: center;
-    margin-top: 40px;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #0d1117, #1a1f25);
+  color: #eaeaea;
+  overflow: hidden;
 }
 
-.arbre-svg {
-    width: 100%;
-    max-width: 800px;
-    height: auto;
+.page-arbre {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4vh 2rem;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-.leaf:hover {
-    fill: #5ca85c;
-    cursor: pointer;
+.page-arbre h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #a6e3a1;
 }
 
-.bouton-creer-cercle {
-    margin-top: 20px;
-    font-size: 18px;
+.page-arbre p {
+  font-size: 1.2rem;
+  max-width: 720px;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  color: #c7c7c7;
 }
 
-.bouton-creer-cercle a {
-    background: #7FBF7F;
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
+canvas#treeCanvas {
+  width: 80vw;
+  height: 60vh;
+  max-width: 1000px;
+  background-color: #111;
+  border-radius: 8px;
+  box-shadow: 0 0 24px rgba(166, 227, 161, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.bouton-creer-cercle a:hover {
-    background: #5ca85c;
+/* --- Bouton d'appel éventuel --- */
+.arbre-btn {
+  margin-top: 2rem;
+  padding: 0.8rem 1.6rem;
+  background-color: #a6e3a1;
+  color: #0d1117;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
+
+.arbre-btn:hover {
+  background-color: #b7f5b0;
+  color: #0a0f13;
+}
+
+/* --- Responsive --- */
+@media screen and (max-width: 768px) {
+  .page-arbre h1 {
+    font-size: 2rem;
+  }
+
+  .page-arbre p {
+    font-size: 1rem;
+  }
+
+  canvas#treeCanvas {
+    height: 60vh;
+  }
+}
+
+
 
 /* Manifeste */
 .manifeste {
