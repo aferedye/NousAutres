@@ -26,4 +26,37 @@
             startTree();
         });
     </script>
+    <script>
+        fetch('/api/cercle')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Cercles reçus :', data);
+            // ➜ ici, tu inséreras les cercles dans ton arbre fractal
+        });
+    </script>
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("/api/cercle")
+      .then(response => response.json())
+      .then(data => {
+        const cercles = data['hydra:member'];
+        const container = document.getElementById("cercles-container");
+
+        if (cercles.length === 0) {
+          container.innerHTML = "<p>Aucun cercle pour le moment.</p>";
+        } else {
+          cercles.forEach(cercle => {
+            const div = document.createElement("div");
+            div.className = "cercle";
+            div.innerHTML = `<strong>${cercle.nom}</strong> (${cercle.type})<br>${cercle.description || ""}`;
+            container.appendChild(div);
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Erreur lors du chargement des cercles :", error);
+      });
+  });
+</script>
+
 {% endblock %}
