@@ -1,6 +1,4 @@
-html {
-  scroll-behavior: smooth;
-}
+
 
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -342,7 +340,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #0d1117, #1a1f25);
   color: #eaeaea;
   overflow: hidden;
 }
@@ -356,6 +353,7 @@ body {
   padding: 4vh 2rem;
   box-sizing: border-box;
   text-align: center;
+  background: linear-gradient(to bottom, #0d1117, #1a1f25);
 }
 
 .page-arbre h1 {
