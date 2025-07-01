@@ -1,10 +1,10 @@
-
-
 body {
   font-family: 'Segoe UI', sans-serif;
   line-height: 1.6;
+  overflow-y: auto; /* Permet le défilement vertical */
   overflow-x: hidden; /* Empêche le débordement horizontal */
   box-sizing: border-box;
+  color: #eaeaea;
 }
 
 body, html {
@@ -71,7 +71,6 @@ nav a.active {
   position: relative;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -334,14 +333,6 @@ nav a.active {
 .cta-button:hover {
   background-color: #444;
   transform: scale(1.05);
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  color: #eaeaea;
-  overflow: hidden;
 }
 
 .page-arbre {
