@@ -543,6 +543,13 @@ canvas#treeCanvas {
   color: #555;
 }
 
+.cercle {
+    background: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
 
 
 /* Animation et transitions */

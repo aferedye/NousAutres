@@ -3,5 +3,35 @@
 {% block title %}Nous Autres – Cercles{% endblock %}
 
 {% block body %}
-<h1>En construction</h1>
+<h1>Les cercles vivants</h1>
+<div id="cercles-container">
+  <p>Chargement des cercles en cours...</p>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("/api/cercle")
+      .then(response => response.json())
+      .then(data => {
+        const cercles = data['hydra:member'];
+        const container = document.getElementById("cercles-container");
+
+        if (cercles.length === 0) {
+          container.innerHTML = "<p>Aucun cercle pour le moment.</p>";
+        } else {
+          container.innerHTML = "";
+          cercles.forEach(cercle => {
+            const div = document.createElement("div");
+            div.className = "cercle";
+            div.innerHTML = `<strong>${cercle.nom}</strong> (${cercle.type})<br>${cercle.description || ""}`;
+            container.appendChild(div);
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Erreur lors du chargement des cercles :", error);
+        document.getElementById("cercles-container").innerHTML = "<p>Erreur de chargement.</p>";
+      });
+  });
+</script>
 {% endblock %}
