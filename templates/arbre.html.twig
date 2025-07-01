@@ -26,12 +26,5 @@
             startTree();
         });
     </script>
-    <script>
-        fetch('/api/cercle')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Cercles reçus :', data);
-            // ➜ ici, tu inséreras les cercles dans ton arbre fractal
-        });
-    </script>
+
 {% endblock %}

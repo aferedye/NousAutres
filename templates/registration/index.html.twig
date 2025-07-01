@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription – Nous Autres{% endblock %}
+
+{% block body %}
+<h1>Rejoindre Nous Autres</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.pseudo) }}
+    {{ form_row(form.statut) }}
+    {{ form_row(form.plainPassword) }}
+    <button type="submit">S'inscrire</button>
+{{ form_end(form) }}
+{% endblock %}
