@@ -16,13 +16,170 @@
 
     {{ form_start(form, { attr: { class: 'inscription-form', 'data-turbo': 'false' } }) }}
         {{ form_row(form.email, { attr: { placeholder: 'Adresse email' } }) }}
+        <div id="email-feedback" style="font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem;"></div>
         {{ form_row(form.pseudo, { attr: { placeholder: 'Pseudo' } }) }}
+        <div id="pseudo-feedback" style="font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem;"></div>
         {{ form_row(form.statut, { attr: { placeholder: 'Statut' } }) }}
         {{ form_label(form.plainPassword.first) }}
         {{ form_widget(form.plainPassword.first, { attr: { placeholder: 'Mot de passe' } }) }}
+        <div id="password-feedback" style="font-size: 0.9rem; margin-top: -0.5rem;"></div>
         {{ form_label(form.plainPassword.second) }}
         {{ form_widget(form.plainPassword.second, { attr: { placeholder: 'Confirmer le mot de passe' } }) }}
-            <button type="submit" class="cta-button">S'inscrire</button>
+            <button type="submit" class="cta-button" id="submit-button" disabled>S'inscrire</button>
     {{ form_end(form) }}
 </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pseudoInput = document.querySelector('input[name="registration_form[pseudo]"]');
+            const feedback = document.getElementById('pseudo-feedback');
+
+            // Affiche le feedback uniquement si l'input pseudo existe
+            // Ajoute un écouteur d'événement pour vérifier la disponibilité du pseudo
+            if (pseudoInput && feedback) {
+                pseudoInput.addEventListener('input', async () => {
+                    const pseudo = pseudoInput.value;
+
+                    // Affiche le feedback uniquement si le pseudo a au moins 3 caractères
+                    if (pseudo.length < 3 && feedback.textContent === '') {
+                        feedback.textContent = '⚠️ Le pseudo doit contenir au moins 3 caractères';
+                        feedback.style.color = '#c77';
+                    } else if (pseudo.length < 3 && feedback.textContent !== '') {
+                        feedback.textContent = '';
+                        return;
+                    }
+                    
+
+                    // Empêche les caractères non alphabétiques
+                    if (!/^[a-zA-ZÀ-ÿ]+$/.test(pseudo)) {
+                        feedback.textContent = '❌ Le pseudo ne doit contenir que des lettres';
+                        feedback.style.color = '#b33';
+                        pseudoOK = false;
+                        actualiserEtatBouton();
+                        return;
+                    }
+
+                    const response = await fetch(`/verifier-pseudo?pseudo=${encodeURIComponent(pseudo)}`);
+                    const data = await response.json();
+
+
+                    if (data.disponible) {
+                        feedback.textContent = '✅ Pseudo disponible';
+                        feedback.style.color = '#2a662a';
+                        pseudoOK = data.disponible;
+                        actualiserEtatBouton();
+                    } else {
+                        feedback.textContent = '❌ Ce pseudo est déjà pris';
+                        feedback.style.color = '#b33';
+                    }
+                });
+            }
+
+            const pw1 = document.querySelector('input[name="registration_form[plainPassword][first]"]');
+            const pw2 = document.querySelector('input[name="registration_form[plainPassword][second]"]');
+
+            // Vérification de correspondance des mots de passe
+            if (pw1 && pw2) {
+                pw2.addEventListener('input', () => {
+                    pwdMatch = pw1.value === pw2.value;
+                    pw2.style.borderColor = pwdMatch ? '#2a662a' : '#b33';
+                    actualiserEtatBouton();
+                    if (pw2.value && pw1.value !== pw2.value) {
+                        pw2.style.borderColor = '#b33';
+                    } else {
+                        pw2.style.borderColor = '#2a662a';
+                    }
+                });
+            }
+
+            const emailInput = document.querySelector('input[name="registration_form[email]"]');
+            const emailFeedback = document.getElementById('email-feedback');
+
+            // Vérification de l'adresse e-mail
+            // Affiche le feedback uniquement si l'input n'est pas vide
+            if (emailInput && emailFeedback) {
+                emailInput.addEventListener('input', async () => {
+                    const email = emailInput.value;
+
+                    // Vérification rapide de format
+                    if (!estEmailValide(email)) {
+                        emailFeedback.textContent = '⚠️ Adresse e-mail invalide';
+                        emailFeedback.style.color = '#c77';
+                        emailOK = false;
+                        actualiserEtatBouton();
+                        return;
+                    }
+
+                    const response = await fetch(`/verifier-email?email=${encodeURIComponent(email)}`);
+                    const data = await response.json();
+
+                    if (data.disponible) {
+                        emailFeedback.textContent = '✅ Adresse disponible';
+                        emailFeedback.style.color = '#2a662a';
+                        emailOK = data.disponible;
+                        actualiserEtatBouton();
+                    } else {
+                        emailFeedback.textContent = '❌ Cette adresse est déjà utilisée';
+                        emailFeedback.style.color = '#b33';
+                    }
+                });
+            }
+
+            const passwordFeedback = document.getElementById('password-feedback');
+
+            // Vérification de la force du mot de passe
+            // Affiche le feedback uniquement si l'input n'est pas vide
+            if (pw1 && passwordFeedback) {
+                pw1.addEventListener('input', () => {
+                    const pwd = pw1.value;
+
+                    if (estMotDePasseFort(pwd)) {
+                        passwordFeedback.textContent = '✅ Mot de passe fort';
+                        passwordFeedback.style.color = '#2a662a';
+                        pwdStrong = true;
+                    } else {
+                        passwordFeedback.textContent = '❌ Utilise au moins 8 caractères, avec majuscules, chiffres et symboles';
+                        passwordFeedback.style.color = '#b33';
+                        pwdStrong = false;
+                    }
+                    actualiserEtatBouton();
+                });
+            }
+        });
+
+        // Fonction pour vérifier si l'adresse e-mail est valide
+        // Utilise une expression régulière pour valider le format de l'e-mail
+        function estEmailValide(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Fonction pour vérifier la force du mot de passe
+        // Un mot de passe fort doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial
+        // Utilise des expressions régulières pour valider les critères
+        function estMotDePasseFort(pwd) {
+            const longueurOK = pwd.length >= 8;
+            const majuscule = /[A-Z]/.test(pwd);
+            const minuscule = /[a-z]/.test(pwd);
+            const chiffre = /[0-9]/.test(pwd);
+            const special = /[^A-Za-z0-9]/.test(pwd);
+            return longueurOK && majuscule && minuscule && chiffre && special;
+        }
+
+        let emailOK = false;
+        let pseudoOK = false;
+        let pwdMatch = false;
+        let pwdStrong = false;
+
+        function actualiserEtatBouton() {
+            const bouton = document.getElementById('submit-button');
+            if (emailOK && pseudoOK && pwdMatch && pwdStrong) {
+                bouton.disabled = false;
+                bouton.classList.add('active');
+            } else {
+                bouton.disabled = true;
+                bouton.classList.remove('active');
+            }
+        }
+</script>
 {% endblock %}

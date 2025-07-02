@@ -437,6 +437,12 @@ ul.form-errors {
   font-size: 0.95rem;
 }
 
+#pseudo-feedback,
+#email-feedback {
+  font-weight: 500;
+  padding-left: 0.2rem;
+}
+
 .form-errors li {
   margin-left: 1.2rem;
 }
@@ -458,6 +464,15 @@ ul.form-errors {
   margin-bottom: 1.5rem;
   text-align: center;
   font-weight: 500;
+}
+
+.cta-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cta-button.active {
+  transition: all 0.3s ease;
 }
 
 /* Pages Connexion */
