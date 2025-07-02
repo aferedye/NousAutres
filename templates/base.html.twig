@@ -20,6 +20,7 @@
                 <a href="/">🌳 Nous Autres</a>
             </div>
             <nav class="nav-menu">
+                <div class="nav-gauche">
                 <ul>
                     <li><a href="{{ path('manifeste') }}" class="{% if app.request.attributes.get('_route') == 'manifeste' %}active{% endif %}">Le Manifeste</a></li>
                     <li><a href="{{ path('charte') }}" class="{% if app.request.attributes.get('_route') == 'charte' %}active{% endif %}">Charte</a></li>
@@ -27,8 +28,22 @@
                     <li><a href="{{ path('arbre') }}" class="{% if app.request.attributes.get('_route') == 'arbre' %}active{% endif %}">🌳 Arbre vivant</a></li>
                     <li><a href="{{ path('projets') }}" class="{% if app.request.attributes.get('_route') == 'projets' %}active{% endif %}">Projets</a></li>
                     <li><a href="{{ path('contact') }}" class="{% if app.request.attributes.get('_route') == 'contact' %}active{% endif %}">Contact</a></li>
-                    
                 </ul>
+                </div>
+                <div class="nav-droite">
+                {% if app.user %}
+                <p style="color: green;">Connecté : {{ app.user.email }}</p>
+                {% else %}
+                <p style="color: red;">Non connecté</p>
+                {% endif %}
+                    {% if app.user %}
+                        <span>Bienvenue, {{ app.user.pseudo }}</span>
+                        <a href="{{ path('app_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}">Connexion</a>
+                        <a href="{{ path('app_register') }}">Inscription</a>
+                    {% endif %}
+                </div>
             </nav>
         </header>
         {% block body %}

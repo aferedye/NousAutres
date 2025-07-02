@@ -67,6 +67,39 @@ nav a.active {
   border-bottom: 2px solid #7FBF7F; /* optionnel : soulignement */
 }
 
+.nav-principal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  font-family: sans-serif;
+}
+
+.nav-gauche,
+.nav-droite {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-principal a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.nav-bienvenue {
+  color: #555;
+  font-style: italic;
+}
+
+.nav-deco {
+  color: #b33;
+  font-weight: bold;
+}
+
 .hero {
   position: relative;
   width: 100vw;
