@@ -345,6 +345,47 @@ nav a.active {
   transform: translateY(0);
 }
 
+/* Formulaire de confirmation */
+.confirmation-form {
+  background: #f9f9f9;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.confirmation-form input {
+  width: 100%;
+  padding: 0.7rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.confirmation-form .cta-button {
+  margin-top: 1.5rem;
+  background-color: #222;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.confirmation-form .cta-button:hover {
+  background-color: #295f41;
+}
+
+.flash-success {
+  color: #2a662a;
+  margin: 1rem 0;
+}
+
+.flash-error {
+  color: #b33;
+  margin: 1rem 0;
+}
 /* Pages Inscription */
 
 .page-inscription {

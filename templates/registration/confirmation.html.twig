@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation{% endblock %}
+
+{% block body %}
+<div class="page-login">
+    <h1 class="login-title">Confirmation d’inscription</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="flash-success">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="flash-error">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post" class="confirmation-form" style="max-width: 400px; margin: 2rem auto;">
+        <label for="code">Code reçu par e-mail</label>
+        <input type="text" id="code" name="code" required placeholder="Ex: 482913" />
+
+        <button type="submit" class="cta-button">Confirmer</button>
+    </form>
+</div>
+{% endblock %}
