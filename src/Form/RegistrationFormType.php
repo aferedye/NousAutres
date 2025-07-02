@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -23,11 +24,14 @@ class RegistrationFormType extends AbstractType
                     'Bâtisseur' => 'bâtisseur'
                 ]
             ])
-            ->add('plainPassword', PasswordType::class, [
-                'mapped' => false,
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
                 'required' => true,
-                'label' => 'Mot de passe'
-            ]);
+                'first_options'  => ['label' => false, 'attr' => ['placeholder' => 'Mot de passe']],
+                'second_options' => ['label' => false, 'attr' => ['placeholder' => 'Confirmer le mot de passe']],
+                'mapped' => false,
+                ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

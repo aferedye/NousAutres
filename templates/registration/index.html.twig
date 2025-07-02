@@ -3,13 +3,26 @@
 {% block title %}Inscription – Nous Autres{% endblock %}
 
 {% block body %}
-<h1>Rejoindre Nous Autres</h1>
+<div class="page-inscription">
+    <h1 class="inscription-title">Rejoindre Nous Autres</h1>
 
-{{ form_start(form) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.pseudo) }}
-    {{ form_row(form.statut) }}
-    {{ form_row(form.plainPassword) }}
-    <button type="submit">S'inscrire</button>
-{{ form_end(form) }}
+    {% if not form.vars.valid %}
+        <div class="form-error">
+            {{ form_errors(form) }}
+            {{ form_errors(form.plainPassword.first) }}
+            {{ form_errors(form.plainPassword.second) }}
+        </div>
+    {% endif %}
+
+    {{ form_start(form, { attr: { class: 'inscription-form', 'data-turbo': 'false' } }) }}
+        {{ form_row(form.email, { attr: { placeholder: 'Adresse email' } }) }}
+        {{ form_row(form.pseudo, { attr: { placeholder: 'Pseudo' } }) }}
+        {{ form_row(form.statut, { attr: { placeholder: 'Statut' } }) }}
+        {{ form_label(form.plainPassword.first) }}
+        {{ form_widget(form.plainPassword.first, { attr: { placeholder: 'Mot de passe' } }) }}
+        {{ form_label(form.plainPassword.second) }}
+        {{ form_widget(form.plainPassword.second, { attr: { placeholder: 'Confirmer le mot de passe' } }) }}
+            <button type="submit" class="cta-button">S'inscrire</button>
+    {{ form_end(form) }}
+</div>
 {% endblock %}

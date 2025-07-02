@@ -1,38 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+<div class="page-login">
+    <h1 class="login-title">Connexion</h1>
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% endif %}
+    {% for message in app.flashes('success') %}
+    <div class="flash-success">{{ message }}</div>
+    {% endfor %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="username">Email</label>
-        <input type="email" name="email" value="{{ last_username }}" id="username" class="form-control" autocomplete="email" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+    {% if error %}
+        <div class="login-error">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
 
-        {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+    {% if app.user %}
+        <div class="login-welcome">
+            Connecté en tant que {{ app.user.userIdentifier }}. 
+            <a href="{{ path('app_logout') }}" class="nav-deco">Se déconnecter</a>
+        </div>
+    {% endif %}
 
-            <div class="checkbox mb-3">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Remember me</label>
-            </div>
-        #}
+    <form method="post" class="login-form">
+        <label for="email">Adresse email</label>
+        <input type="email" name="email" id="email" value="{{ last_username }}" required autofocus>
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" id="password" required>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit" class="cta-button">Se connecter</button>
     </form>
+</div>
 {% endblock %}

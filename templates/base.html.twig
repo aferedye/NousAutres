@@ -31,11 +31,6 @@
                 </ul>
                 </div>
                 <div class="nav-droite">
-                {% if app.user %}
-                <p style="color: green;">Connecté : {{ app.user.email }}</p>
-                {% else %}
-                <p style="color: red;">Non connecté</p>
-                {% endif %}
                     {% if app.user %}
                         <span>Bienvenue, {{ app.user.pseudo }}</span>
                         <a href="{{ path('app_logout') }}">Déconnexion</a>
