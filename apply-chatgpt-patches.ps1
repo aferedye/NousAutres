@@ -62,10 +62,10 @@ function Apply-Diff($diffText) {
     git commit -m $msg | Out-Null
 
     # Ouverture des fichiers modifiés dans VS Code
-    $files = git diff --name-only --diff-filter=AM HEAD~1 HEAD
-    foreach ($f in $files) {
-        if (Test-Path $f) { code --goto "$f:1:1" }
-    }
+    #$files = git diff --name-only --diff-filter=AM HEAD~1 HEAD
+    #foreach ($f in $files) {
+     #   if (Test-Path $f) { code --reuse-window --goto "$f:1:1" }
+    #}
 
     Remove-Item $tmp -Force
     Write-Host "[OK] Patch appliqué et commité." -ForegroundColor Green
