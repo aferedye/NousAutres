@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/circles', name: 'api_circles_')]
 class CircleApiController extends AbstractController
@@ -27,10 +28,18 @@ class CircleApiController extends AbstractController
         return $this->json($circle->toArray());
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $req, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
     {
-        $data = json_decode($req->getContent() ?: '[]', true) ?? [];
+        if ($req->headers->get('Content-Type') === null || stripos($req->headers->get('Content-Type'), 'application/json') === false) {
+            return $this->json(['error' => 'Content-Type must be application/json'], 415);
+        }
+
+        $data = json_decode($req->getContent() ?: '[]', true);
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid JSON'], 400);
+        }
 
         $circle = new Circle();
         $circle->setName((string)($data['name'] ?? ''));
@@ -52,10 +61,18 @@ class CircleApiController extends AbstractController
         return $this->json($circle->toArray(), 201);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}', name: 'patch', methods: ['PATCH', 'PUT'])]
     public function patch(Circle $circle, Request $req, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
     {
-        $data = json_decode($req->getContent() ?: '[]', true) ?? [];
+        if ($req->headers->get('Content-Type') === null || stripos($req->headers->get('Content-Type'), 'application/json') === false) {
+            return $this->json(['error' => 'Content-Type must be application/json'], 415);
+        }
+
+        $data = json_decode($req->getContent() ?: '[]', true);
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid JSON'], 400);
+        }
 
         if (array_key_exists('name', $data)) { $circle->setName((string)$data['name']); }
         if (array_key_exists('description', $data)) { $circle->setDescription($data['description'] !== null ? (string)$data['description'] : null); }
@@ -74,6 +91,7 @@ class CircleApiController extends AbstractController
         return $this->json($circle->toArray());
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(Circle $circle, EntityManagerInterface $em): JsonResponse
     {

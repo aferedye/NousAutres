@@ -1,150 +1,14 @@
-=== path: src/Entity/Circle.php
+=== path: config/packages/security_access_control.yaml
 <<<
-<?php
+security:
+    access_control:
+        # API Cercles: lecture ouverte
+        - { path: ^/api/circles$, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/circles/\d+$, methods: [GET], roles: PUBLIC_ACCESS }
 
-namespace App\Entity;
-
-use App\Repository\CircleRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-
-#[ORM\Entity(repositoryClass: CircleRepository::class)]
-#[ORM\Table(name: 'circle')]
-#[ORM\HasLifecycleCallbacks]
-class Circle
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
-    #[ORM\Column(type: 'string', length: 140)]
-    #[Assert\NotBlank(message: 'name is required')]
-    #[Assert\Length(max: 140)]
-    private string $name = '';
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $description = null;
-
-    #[ORM\Column(type: 'string', length: 160, unique: true)]
-    private string $slug = '';
-
-    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'public'])]
-    private string $visibility = 'public'; // public | private | hidden
-
-    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'active'])]
-    private string $status = 'active'; // active | archived
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $updatedAt;
-
-    public function getId(): ?int { return $this->id; }
-
-    public function getName(): string { return $this->name; }
-    public function setName(string $name): self { $this->name = $name; return $this; }
-
-    public function getDescription(): ?string { return $this->description; }
-    public function setDescription(?string $description): self { $this->description = $description; return $this; }
-
-    public function getSlug(): string { return $this->slug; }
-    public function setSlug(string $slug): self { $this->slug = $slug; return $this; }
-
-    public function getVisibility(): string { return $this->visibility; }
-    public function setVisibility(string $visibility): self { $this->visibility = $visibility; return $this; }
-
-    public function getStatus(): string { return $this->status; }
-    public function setStatus(string $status): self { $this->status = $status; return $this; }
-
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
-    public function setCreatedAt(\DateTimeImmutable $dt): self { $this->createdAt = $dt; return $this; }
-
-    public function getUpdatedAt(): \DateTime { return $this->updatedAt; }
-    public function setUpdatedAt(\DateTime $dt): self { $this->updatedAt = $dt; return $this; }
-
-    #[ORM\PrePersist]
-    public function onPrePersist(): void
-    {
-        $now = new \DateTimeImmutable('now');
-        $this->createdAt = $now;
-        $this->updatedAt = new \DateTime('now');
-
-        if (!$this->slug) {
-            $this->slug = self::slugify($this->name);
-        }
-    }
-
-    #[ORM\PreUpdate]
-    public function onPreUpdate(): void
-    {
-        $this->updatedAt = new \DateTime('now');
-        if (!$this->slug) {
-            $this->slug = self::slugify($this->name);
-        }
-    }
-
-    public static function slugify(string $value): string
-    {
-        $value = strtolower(trim($value));
-        // replace non letters or digits by -
-        $value = preg_replace('~[^a-z0-9]+~', '-', $value) ?? '';
-        $value = trim($value, '-');
-        if ($value === '') {
-            $value = 'circle-' . substr(sha1((string)mt_rand()), 0, 8);
-        }
-        return $value;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'description' => $this->getDescription(),
-            'slug' => $this->getSlug(),
-            'visibility' => $this->getVisibility(),
-            'status' => $this->getStatus(),
-            'createdAt' => $this->getCreatedAt()->format(\DateTimeInterface::ATOM),
-            'updatedAt' => $this->getUpdatedAt()->format(\DateTimeInterface::ATOM),
-        ];
-    }
-}
->>>
-=== path: src/Repository/CircleRepository.php
-<<<
-<?php
-
-namespace App\Repository;
-
-use App\Entity\Circle;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-
-/**
- * @extends ServiceEntityRepository<Circle>
- */
-class CircleRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Circle::class);
-    }
-
-    /**
-     * @return Circle[]
-     */
-    public function findPublicActives(int $limit = 12): array
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.visibility = :v')->setParameter('v', 'public')
-            ->andWhere('c.status = :s')->setParameter('s', 'active')
-            ->orderBy('c.createdAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()->getResult();
-    }
-}
+        # Ecriture / modification / suppression: authentification requise
+        - { path: ^/api/circles$, methods: [POST], roles: ROLE_USER }
+        - { path: ^/api/circles/\d+$, methods: [PUT,PATCH,DELETE], roles: ROLE_USER }
 >>>
 === path: src/Controller/CircleApiController.php
 <<<
@@ -160,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/circles', name: 'api_circles_')]
 class CircleApiController extends AbstractController
@@ -177,10 +42,18 @@ class CircleApiController extends AbstractController
         return $this->json($circle->toArray());
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $req, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
     {
-        $data = json_decode($req->getContent() ?: '[]', true) ?? [];
+        if ($req->headers->get('Content-Type') === null || stripos($req->headers->get('Content-Type'), 'application/json') === false) {
+            return $this->json(['error' => 'Content-Type must be application/json'], 415);
+        }
+
+        $data = json_decode($req->getContent() ?: '[]', true);
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid JSON'], 400);
+        }
 
         $circle = new Circle();
         $circle->setName((string)($data['name'] ?? ''));
@@ -202,10 +75,18 @@ class CircleApiController extends AbstractController
         return $this->json($circle->toArray(), 201);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}', name: 'patch', methods: ['PATCH', 'PUT'])]
     public function patch(Circle $circle, Request $req, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
     {
-        $data = json_decode($req->getContent() ?: '[]', true) ?? [];
+        if ($req->headers->get('Content-Type') === null || stripos($req->headers->get('Content-Type'), 'application/json') === false) {
+            return $this->json(['error' => 'Content-Type must be application/json'], 415);
+        }
+
+        $data = json_decode($req->getContent() ?: '[]', true);
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid JSON'], 400);
+        }
 
         if (array_key_exists('name', $data)) { $circle->setName((string)$data['name']); }
         if (array_key_exists('description', $data)) { $circle->setDescription($data['description'] !== null ? (string)$data['description'] : null); }
@@ -224,42 +105,13 @@ class CircleApiController extends AbstractController
         return $this->json($circle->toArray());
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(Circle $circle, EntityManagerInterface $em): JsonResponse
     {
         $em->remove($circle);
         $em->flush();
         return $this->json(null, 204);
-    }
-}
->>>
-=== path: src/Controller/CircleController.php
-<<<
-<?php
-
-namespace App\Controller;
-
-use App\Repository\CircleRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
-class CircleController extends AbstractController
-{
-    #[Route('/cercles', name: 'app_cercles')]
-    public function index(CircleRepository $repo): Response
-    {
-        $cercles = $repo->findPublicActives(24);
-
-        // map simple vers tableau pour Twig
-        $arr = array_map(fn($c) => [
-            'nom' => $c->getName(),
-            'description' => $c->getDescription(),
-        ], $cercles);
-
-        return $this->render('cercles.html.twig', [
-            'cercles' => $arr
-        ]);
     }
 }
 >>>

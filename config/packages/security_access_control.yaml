@@ -1,0 +1,9 @@
+security:
+    access_control:
+        # API Cercles: lecture ouverte
+        - { path: ^/api/circles$, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/circles/\d+$, methods: [GET], roles: PUBLIC_ACCESS }
+
+        # Ecriture / modification / suppression: authentification requise
+        - { path: ^/api/circles$, methods: [POST], roles: ROLE_USER }
+        - { path: ^/api/circles/\d+$, methods: [PUT,PATCH,DELETE], roles: ROLE_USER }
