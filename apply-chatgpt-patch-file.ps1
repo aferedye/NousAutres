@@ -74,7 +74,8 @@ function Apply-Diff($text) {
       }
 
       # Écrit le fichier en UTF-8 (sans BOM)
-      Set-Content -Path $path -Value $sb.ToString() -Encoding UTF8
+      $enc = New-Object System.Text.UTF8Encoding($false)
+      [System.IO.File]::WriteAllText($path, $sb.ToString(), $enc)
 
       $written += $path
     }

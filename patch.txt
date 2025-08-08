@@ -1,9 +1,245 @@
+=== path: src/Entity/Circle.php
+<<<
+<?php
+
+namespace App\Entity;
+
+use App\Repository\CircleRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: CircleRepository::class)]
+#[ORM\Table(name: 'circle')]
+#[ORM\HasLifecycleCallbacks]
+class Circle
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
+    #[ORM\Column(type: 'string', length: 140)]
+    #[Assert\NotBlank(message: 'name is required')]
+    #[Assert\Length(max: 140)]
+    private string $name = '';
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: 'string', length: 160, unique: true)]
+    private string $slug = '';
+
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'public'])]
+    private string $visibility = 'public'; // public | private | hidden
+
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'active'])]
+    private string $status = 'active'; // active | archived
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTime $updatedAt;
+
+    public function getId(): ?int { return $this->id; }
+
+    public function getName(): string { return $this->name; }
+    public function setName(string $name): self { $this->name = $name; return $this; }
+
+    public function getDescription(): ?string { return $this->description; }
+    public function setDescription(?string $description): self { $this->description = $description; return $this; }
+
+    public function getSlug(): string { return $this->slug; }
+    public function setSlug(string $slug): self { $this->slug = $slug; return $this; }
+
+    public function getVisibility(): string { return $this->visibility; }
+    public function setVisibility(string $visibility): self { $this->visibility = $visibility; return $this; }
+
+    public function getStatus(): string { return $this->status; }
+    public function setStatus(string $status): self { $this->status = $status; return $this; }
+
+    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $dt): self { $this->createdAt = $dt; return $this; }
+
+    public function getUpdatedAt(): \DateTime { return $this->updatedAt; }
+    public function setUpdatedAt(\DateTime $dt): self { $this->updatedAt = $dt; return $this; }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $now = new \DateTimeImmutable('now');
+        $this->createdAt = $now;
+        $this->updatedAt = new \DateTime('now');
+
+        if (!$this->slug) {
+            $this->slug = self::slugify($this->name);
+        }
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new \DateTime('now');
+        if (!$this->slug) {
+            $this->slug = self::slugify($this->name);
+        }
+    }
+
+    public static function slugify(string $value): string
+    {
+        $value = strtolower(trim($value));
+        // replace non letters or digits by -
+        $value = preg_replace('~[^a-z0-9]+~', '-', $value) ?? '';
+        $value = trim($value, '-');
+        if ($value === '') {
+            $value = 'circle-' . substr(sha1((string)mt_rand()), 0, 8);
+        }
+        return $value;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'slug' => $this->getSlug(),
+            'visibility' => $this->getVisibility(),
+            'status' => $this->getStatus(),
+            'createdAt' => $this->getCreatedAt()->format(\DateTimeInterface::ATOM),
+            'updatedAt' => $this->getUpdatedAt()->format(\DateTimeInterface::ATOM),
+        ];
+    }
+}
+>>>
+=== path: src/Repository/CircleRepository.php
+<<<
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Circle;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<Circle>
+ */
+class CircleRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Circle::class);
+    }
+
+    /**
+     * @return Circle[]
+     */
+    public function findPublicActives(int $limit = 12): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.visibility = :v')->setParameter('v', 'public')
+            ->andWhere('c.status = :s')->setParameter('s', 'active')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()->getResult();
+    }
+}
+>>>
+=== path: src/Controller/CircleApiController.php
+<<<
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Circle;
+use App\Repository\CircleRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+#[Route('/api/circles', name: 'api_circles_')]
+class CircleApiController extends AbstractController
+{
+    #[Route('', name: 'list', methods: ['GET'])]
+    public function list(CircleRepository $repo): JsonResponse
+    {
+        $circles = $repo->findBy([], ['createdAt' => 'DESC'], 100);
+        return $this->json(array_map(fn(Circle $c) => $c->toArray(), $circles));
+    }
+
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(Circle $circle): JsonResponse
+    {
+        return $this->json($circle->toArray());
+    }
+
+    #[Route('', name: 'create', methods: ['POST'])]
+    public function create(Request $req, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
+    {
+        $data = json_decode($req->getContent() ?: '[]', true) ?? [];
+
+        $circle = new Circle();
+        $circle->setName((string)($data['name'] ?? ''));
+        $circle->setDescription(isset($data['description']) ? (string)$data['description'] : null);
+        $circle->setVisibility((string)($data['visibility'] ?? 'public'));
+        $circle->setStatus((string)($data['status'] ?? 'active'));
+        if (!empty($data['slug'])) { $circle->setSlug((string)$data['slug']); }
+
+        $errors = $validator->validate($circle);
+        if (count($errors) > 0) {
+            $errs = [];
+            foreach ($errors as $e) { $errs[] = $e->getMessage(); }
+            return $this->json(['errors' => $errs], 422);
+        }
+
+        $em->persist($circle);
+        $em->flush();
+
+        return $this->json($circle->toArray(), 201);
+    }
+
+    #[Route('/{id}', name: 'patch', methods: ['PATCH', 'PUT'])]
+    public function patch(Circle $circle, Request $req, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
+    {
+        $data = json_decode($req->getContent() ?: '[]', true) ?? [];
+
+        if (array_key_exists('name', $data)) { $circle->setName((string)$data['name']); }
+        if (array_key_exists('description', $data)) { $circle->setDescription($data['description'] !== null ? (string)$data['description'] : null); }
+        if (array_key_exists('visibility', $data)) { $circle->setVisibility((string)$data['visibility']); }
+        if (array_key_exists('status', $data)) { $circle->setStatus((string)$data['status']); }
+        if (array_key_exists('slug', $data) && $data['slug']) { $circle->setSlug((string)$data['slug']); }
+
+        $errors = $validator->validate($circle);
+        if (count($errors) > 0) {
+            $errs = [];
+            foreach ($errors as $e) { $errs[] = $e->getMessage(); }
+            return $this->json(['errors' => $errs], 422);
+        }
+
+        $em->flush();
+        return $this->json($circle->toArray());
+    }
+
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
+    public function delete(Circle $circle, EntityManagerInterface $em): JsonResponse
+    {
+        $em->remove($circle);
+        $em->flush();
+        return $this->json(null, 204);
+    }
+}
+>>>
 === path: src/Controller/CircleController.php
 <<<
 <?php
 
 namespace App\Controller;
 
+use App\Repository\CircleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,172 +247,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class CircleController extends AbstractController
 {
     #[Route('/cercles', name: 'app_cercles')]
-    public function index(): Response
+    public function index(CircleRepository $repo): Response
     {
-        // Donnees statiques de demonstration
-        $cercles = [
-            ['nom' => 'Cercle Ethique', 'description' => 'Discussions et actions autour des valeurs fondamentales.'],
-            ['nom' => 'Cercle Ecologie', 'description' => 'Projets lies a la protection et au respect du vivant.'],
-            ['nom' => 'Cercle Innovation', 'description' => 'Recherche de solutions technologiques et sociales.']
-        ];
+        $cercles = $repo->findPublicActives(24);
+
+        // map simple vers tableau pour Twig
+        $arr = array_map(fn($c) => [
+            'nom' => $c->getName(),
+            'description' => $c->getDescription(),
+        ], $cercles);
 
         return $this->render('cercles.html.twig', [
-            'cercles' => $cercles
+            'cercles' => $arr
         ]);
     }
-}
->>>
-=== path: templates/cercles.html.twig
-<<<
-{% extends 'base.html.twig' %}
-
-{% block title %}Cercles - Nous Autres{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/cercles.css') }}">
-{% endblock %}
-
-{% block body %}
-<div class="cercles-container">
-    <h1>Nos Cercles</h1>
-
-    <div class="cercles-actions">
-        <a class="btn btn-primary" href="#">Proposer un cercle</a>
-        <a class="btn btn-outline" href="#">Rejoindre un cercle</a>
-    </div>
-
-    <div class="cercles-grid">
-        {% for cercle in cercles %}
-            <article class="cercle-card" aria-label="Cercle">
-                <header class="cercle-header">
-                    <div class="cercle-avatar" aria-hidden="true">{{ cercle.nom|first|upper }}</div>
-                    <h2>{{ cercle.nom }}</h2>
-                </header>
-                <p class="cercle-desc">{{ cercle.description }}</p>
-                <footer class="cercle-footer">
-                    <a class="btn btn-link" href="#">Voir le cercle</a>
-                </footer>
-            </article>
-        {% else %}
-            <p class="empty">Aucun cercle pour l’instant.</p>
-        {% endfor %}
-    </div>
-</div>
-{% endblock %}
->>>
-=== path: public/css/cercles.css
-<<<
-:root{
-    --na-bg:#0f172a;
-    --na-card:#ffffff;
-    --na-text:#1f2937;
-    --na-muted:#6b7280;
-    --na-primary:#2563eb;
-    --na-primary-weak:#dbeafe;
-    --na-ring:rgba(37,99,235,.4);
-}
-
-.cercles-container {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 2rem 1.25rem;
-}
-
-.cercles-container h1 {
-    text-align: center;
-    font-size: 2.25rem;
-    line-height: 1.1;
-    margin: 0 0 1.25rem 0;
-    color: var(--na-text);
-    letter-spacing: .2px;
-}
-
-.cercles-actions {
-    display: flex;
-    gap: .75rem;
-    justify-content: center;
-    margin: 0 0 1.5rem 0;
-    flex-wrap: wrap;
-}
-
-.btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:.6rem 1rem;
-    border-radius:.75rem;
-    border:1px solid transparent;
-    font-weight:600;
-    text-decoration:none;
-    transition:transform .08s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-    cursor:pointer;
-}
-.btn:focus{ outline: none; box-shadow: 0 0 0 4px var(--na-ring); }
-.btn-primary{ background: var(--na-primary); color:#fff; }
-.btn-primary:hover{ transform: translateY(-1px); }
-.btn-outline{ background:#fff; color: var(--na-primary); border-color: var(--na-primary); }
-.btn-outline:hover{ background: var(--na-primary-weak); }
-
-.cercles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-}
-
-.cercle-card {
-    background: var(--na-card);
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 20px rgba(2,6,23,0.04), 0 2px 6px rgba(2,6,23,0.06);
-    padding: 1rem;
-    display:flex;
-    flex-direction:column;
-    gap:.5rem;
-    transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease;
-}
-.cercle-card:hover{
-    transform: translateY(-4px);
-    border-color:#d1d5db;
-    box-shadow: 0 14px 28px rgba(2,6,23,0.06), 0 4px 10px rgba(2,6,23,0.08);
-}
-
-.cercle-header{
-    display:flex;
-    align-items:center;
-    gap:.75rem;
-}
-.cercle-avatar{
-    width:40px;height:40px;border-radius:12px;
-    background: var(--na-primary-weak);
-    color: var(--na-primary);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;
-}
-.cercle-card h2 {
-    font-size: 1.1rem;
-    margin: 0;
-    color: var(--na-text);
-}
-
-.cercle-desc {
-    color: var(--na-muted);
-    line-height: 1.5;
-    margin:.25rem 0 .5rem 0;
-    min-height: 2.5rem;
-}
-
-.cercle-footer{
-    margin-top:auto;
-}
-.btn-link{
-    color: var(--na-primary);
-    text-decoration:none;
-    font-weight:600;
-}
-.btn-link:hover{ text-decoration:underline; }
-
-.empty{
-    text-align:center;color: var(--na-muted);padding:2rem 0;
 }
 >>>
