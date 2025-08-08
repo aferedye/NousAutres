@@ -1,0 +1,14 @@
+﻿{
+    "results":  [
+                    {
+                        "i":  0,
+                        "result":  {
+                                       "ok":  true,
+                                       "returncode":  0,
+                                       "stdout":  "DONE",
+                                       "stderr":  "",
+                                       "resolved_exe":  "C:\\php\\php.EXE"
+                                   }
+                    }
+                ]
+}

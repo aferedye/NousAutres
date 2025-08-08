@@ -1,0 +1,52 @@
+{
+  "actions": [
+    {
+      "type": "exec",
+      "params": {
+        "cwd": ".",
+        "cmd": [
+          "php",
+          "-r",
+          "$url='http://127.0.0.1:8000/api/cercles/1';$payload='{\"nom\":\"Nouveau nom du cercle\"}';$h=\"Content-Type: application/merge-patch+json\\r\\nAccept: application/ld+json\\r\\n\";$o=['http'=>['method'=>'PATCH','header'=>$h,'content'=>$payload,'ignore_errors'=>true]];$r=file_get_contents($url,false,stream_context_create($o));echo $http_response_header[0].\"\\n\".$r;file_put_contents('patch-cercles-1.json',$r);"
+        ],
+        "timeout": 60
+      }
+    },
+    {
+      "type": "exec",
+      "params": {
+        "cwd": ".",
+        "cmd": [
+          "php",
+          "-r",
+          "$url='http://127.0.0.1:8000/api/projets/1';$payload='{\\\"titre\\\":\\\"Nouveau titre\\\",\\\"description\\\":\\\"Maj via PATCH\\\"}';$h=\"Content-Type: application/merge-patch+json\\r\\nAccept: application/ld+json\\r\\n\";$o=['http'=>['method'=>'PATCH','header'=>$h,'content'=>$payload,'ignore_errors'=>true]];$r=file_get_contents($url,false,stream_context_create($o));echo $http_response_header[0].\"\\n\".$r;file_put_contents('patch-projets-1.json',$r);"
+        ],
+        "timeout": 60
+      }
+    },
+    {
+      "type": "exec",
+      "params": {
+        "cwd": ".",
+        "cmd": [
+          "php",
+          "-r",
+          "$url='http://127.0.0.1:8000/api/echo_traces/1';$payload='{\\\"message\\\":\\\"Echo MAJ\\\"}';$h=\"Content-Type: application/merge-patch+json\\r\\nAccept: application/ld+json\\r\\n\";$o=['http'=>['method'=>'PATCH','header'=>$h,'content'=>$payload,'ignore_errors'=>true]];$r=file_get_contents($url,false,stream_context_create($o));echo $http_response_header[0].\"\\n\".$r;file_put_contents('patch-echo_traces-1.json',$r);"
+        ],
+        "timeout": 60
+      }
+    },
+    {
+      "type": "exec",
+      "params": {
+        "cwd": ".",
+        "cmd": [
+          "php",
+          "-r",
+          "$url='http://127.0.0.1:8000/api/votes/1';$payload='{\\\"valeur\\\":1}';$h=\"Content-Type: application/merge-patch+json\\r\\nAccept: application/ld+json\\r\\n\";$o=['http'=>['method'=>'PATCH','header'=>$h,'content'=>$payload,'ignore_errors'=>true]];$r=file_get_contents($url,false,stream_context_create($o));echo $http_response_header[0].\"\\n\".$r;file_put_contents('patch-votes-1.json',$r);"
+        ],
+        "timeout": 60
+      }
+    }
+  ]
+}

@@ -11,34 +11,32 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ConfirmationController extends AbstractController
 {
-    #[Route('/confirmation', name: 'app_confirmation')]
-    public function confirmer(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UtilisateurRepository $utilisateurRepository
-    ): Response {
-        $user = $this->getUser();
+    #[Route('/confirmation', name: 'app_confirm_account')]
+    public function confirm(Request $request, UtilisateurRepository $utilisateurRepo, EntityManagerInterface $em): Response
+    {
+        $email = $request->query->get('email');
+        $user = $utilisateurRepo->findOneBy(['email' => $email]);
 
         if (!$user) {
-            $this->addFlash('error', 'Tu dois être connecté pour confirmer ton compte.');
-            return $this->redirectToRoute('app_login');
+            $this->addFlash('error', 'Utilisateur introuvable.');
+            return $this->redirectToRoute('app_register');
         }
-
-        $codeSaisi = $request->request->get('code');
 
         if ($request->isMethod('POST')) {
-            if ($user->getConfirmationCode() === $codeSaisi) {
-                $user->setIsVerified(true);
-                $user->setConfirmationCode(null);
-                $entityManager->flush();
+            $codeSaisi = $request->request->get('confirmation_code');
+            if ($codeSaisi == $user->getConfirmationCode()) {
+                $user->setConfirmationCode(null); // ou flag "isVerified" true
+                $em->flush();
 
-                $this->addFlash('success', 'Ton compte est maintenant activé.');
-                return $this->redirectToRoute('app_login'); // ou autre route d’accueil
-            } else {
-                $this->addFlash('error', 'Code invalide. Vérifie ton e-mail.');
+                $this->addFlash('success', 'Votre compte a été confirmé.');
+                return $this->redirectToRoute('app_login');
             }
+
+            $this->addFlash('error', 'Code incorrect.');
         }
 
-        return $this->render('registration/confirmation.html.twig');
+        return $this->render('registration/confirm_account.html.twig', [
+            'email' => $email
+        ]);
     }
 }

@@ -8,12 +8,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use App\Security\LoginFormAuthenticator;
+use App\Repository\UtilisateurRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Uid\Uuid;
 
 class RegistrationController extends AbstractController
 {
@@ -22,7 +26,7 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer,
+        TransportInterface $mailer,
         UserAuthenticatorInterface $userAuthenticator,
         LoginFormAuthenticator $authenticator
     ): Response {
@@ -52,23 +56,27 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Envoyer l'e-mail
-            $email = (new Email())
-                ->from('noreply@nous-autres.org')
+             // Envoi de l'e-mail de confirmation
+            $email = (new TemplatedEmail())
+                ->from(new Address('noreply@nousautres.org', 'Nous Autres'))
                 ->to($user->getEmail())
-                ->subject('Confirmation d’inscription – Nous Autres')
-                ->html("<p>Merci pour ton inscription.</p><p>Voici ton code de confirmation : <strong>$code</strong></p>");
+                ->subject('Votre code de confirmation')
+                ->htmlTemplate('emails/confirmation_code.html.twig')
+                ->context([
+                    'pseudo' => $user->getPseudo(),
+                    'confirmationCode' => $code,
+                ]);
 
             $mailer->send($email);
 
-            $this->addFlash('success', 'Un code de confirmation t’a été envoyé par e-mail.');
+            $this->addFlash('success', 'Pour activer ton compte, clique sur le lien contenu dans le mail et entre le code.');
             $userAuthenticator->authenticateUser(
             $user,
             $authenticator,
             $request
         );
 
-        return $this->redirectToRoute('app_confirmation');
+        return $this->redirectToRoute('app_login');
 
         }
 
