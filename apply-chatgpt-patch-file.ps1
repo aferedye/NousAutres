@@ -31,45 +31,54 @@ function Apply-Diff($text) {
   # Format attendu:
   # === path: relative/path/to/file.ext
   # <<<
-  # ... contenu du fichier ...
+  # ... contenu ...
   # >>>
   $lines = $text -split "`r?`n"
   $i = 0
   $written = @()
 
   while ($i -lt $lines.Count) {
-    $line = $lines[$i].Trim()
-    if ($line -like "=== path:*") {
-      $path = $line.Substring(8).Trim()  # après "=== path:"
+    $line = $lines[$i]
+
+    if ($line -match '^\s*===\s*path\s*:\s*(.+)\s*$') {
+      # Capture propre du chemin après '=== path:'
+      $path = $Matches[1]
+      # Nettoyage (enlève deux-points/espaces parasites en tête)
+      $path = ($path -replace '^[\s:]+','').Trim()
+
       $i++
 
-      # Cherche <<<
-      if ($i -ge $lines.Count -or $lines[$i].Trim() -ne "<<<") {
+      # On attend '<<<'
+      if ($i -ge $lines.Count -or $lines[$i].Trim() -ne '<<<') {
         Write-Host "[X] Bloc '<<<' manquant pour $path" -ForegroundColor Red
         return $false
       }
       $i++
 
-      # Lis jusqu'à >>>
-      $content = New-Object System.Text.StringBuilder
-      while ($i -lt $lines.Count -and $lines[$i].Trim() -ne ">>>") {
-        [void]$content.AppendLine($lines[$i])
+      # Accumule le contenu jusqu'à '>>>'
+      $sb = New-Object System.Text.StringBuilder
+      while ($i -lt $lines.Count -and $lines[$i].Trim() -ne '>>>') {
+        [void]$sb.AppendLine($lines[$i])
         $i++
       }
 
-      if ($i -ge $lines.Count -or $lines[$i].Trim() -ne ">>>") {
+      if ($i -ge $lines.Count -or $lines[$i].Trim() -ne '>>>') {
         Write-Host "[X] Bloc '>>>' manquant pour $path" -ForegroundColor Red
         return $false
       }
 
-      # Crée le dossier si besoin et écrit le fichier (UTF-8)
-      $dir = Split-Path $path -Parent
+      # Crée le dossier si besoin
+      $dir = Split-Path -Path $path -Parent
       if ($dir -and -not (Test-Path $dir)) {
         New-Item -ItemType Directory -Path $dir -Force | Out-Null
       }
-      [System.IO.File]::WriteAllText($path, $content.ToString(), [System.Text.Encoding]::UTF8)
+
+      # Écrit le fichier en UTF-8 (sans BOM)
+      Set-Content -Path $path -Value $sb.ToString() -Encoding UTF8
+
       $written += $path
     }
+
     $i++
   }
 
@@ -78,12 +87,14 @@ function Apply-Diff($text) {
     return $false
   }
 
-  # Git add/commit
   git add -A
   $msg = "Apply filepack: " + (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
   git commit -m $msg | Out-Null
 
   Write-Host "[OK] Fichiers ecrits: $($written -join ', ')" -ForegroundColor Green
+
+  # Optionnel: on vide patch.txt pour éviter de ré-appliquer au prochain tour
+  try { Clear-Content patch.txt -ErrorAction SilentlyContinue } catch {}
   return $true
 }
 

@@ -1,37 +1,23 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Nous Autres – Cercles{% endblock %}
+{% block title %}Cercles - Nous Autres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/cercles.css') }}">
+{% endblock %}
 
 {% block body %}
-<h1>Les cercles vivants</h1>
-<div id="cercles-container">
-  <p>Chargement des cercles en cours...</p>
+<div class="cercles-container">
+    <h1>Nos Cercles</h1>
+    <div class="cercles-grid">
+        {% for cercle in cercles %}
+            <div class="cercle-card">
+                <h2>{{ cercle.nom }}</h2>
+                <p>{{ cercle.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    fetch("/api/cercle")
-      .then(response => response.json())
-      .then(data => {
-        const cercles = data['hydra:member'];
-        const container = document.getElementById("cercles-container");
-
-        if (cercles.length === 0) {
-          container.innerHTML = "<p>Aucun cercle pour le moment.</p>";
-        } else {
-          container.innerHTML = "";
-          cercles.forEach(cercle => {
-            const div = document.createElement("div");
-            div.className = "cercle";
-            div.innerHTML = `<strong>${cercle.nom}</strong> (${cercle.type})<br>${cercle.description || ""}`;
-            container.appendChild(div);
-          });
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors du chargement des cercles :", error);
-        document.getElementById("cercles-container").innerHTML = "<p>Erreur de chargement.</p>";
-      });
-  });
-</script>
 {% endblock %}
+
