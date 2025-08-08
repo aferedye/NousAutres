@@ -13,10 +13,10 @@ class CircleController extends AbstractController
     #[Route('/cercles', name: 'app_cercles')]
     public function index(): Response
     {
-        // Exemple de données statiques, à remplacer par une vraie récupération BDD
+        // Donnees statiques de demonstration
         $cercles = [
-            ['nom' => 'Cercle Éthique', 'description' => 'Discussions et actions autour des valeurs fondamentales.'],
-            ['nom' => 'Cercle Écologie', 'description' => 'Projets liés à la protection et au respect du vivant.'],
+            ['nom' => 'Cercle Ethique', 'description' => 'Discussions et actions autour des valeurs fondamentales.'],
+            ['nom' => 'Cercle Ecologie', 'description' => 'Projets lies a la protection et au respect du vivant.'],
             ['nom' => 'Cercle Innovation', 'description' => 'Recherche de solutions technologiques et sociales.']
         ];
 
@@ -40,12 +40,26 @@ class CircleController extends AbstractController
 {% block body %}
 <div class="cercles-container">
     <h1>Nos Cercles</h1>
+
+    <div class="cercles-actions">
+        <a class="btn btn-primary" href="#">Proposer un cercle</a>
+        <a class="btn btn-outline" href="#">Rejoindre un cercle</a>
+    </div>
+
     <div class="cercles-grid">
         {% for cercle in cercles %}
-            <div class="cercle-card">
-                <h2>{{ cercle.nom }}</h2>
-                <p>{{ cercle.description }}</p>
-            </div>
+            <article class="cercle-card" aria-label="Cercle">
+                <header class="cercle-header">
+                    <div class="cercle-avatar" aria-hidden="true">{{ cercle.nom|first|upper }}</div>
+                    <h2>{{ cercle.nom }}</h2>
+                </header>
+                <p class="cercle-desc">{{ cercle.description }}</p>
+                <footer class="cercle-footer">
+                    <a class="btn btn-link" href="#">Voir le cercle</a>
+                </footer>
+            </article>
+        {% else %}
+            <p class="empty">Aucun cercle pour l’instant.</p>
         {% endfor %}
     </div>
 </div>
@@ -53,46 +67,116 @@ class CircleController extends AbstractController
 >>>
 === path: public/css/cercles.css
 <<<
+:root{
+    --na-bg:#0f172a;
+    --na-card:#ffffff;
+    --na-text:#1f2937;
+    --na-muted:#6b7280;
+    --na-primary:#2563eb;
+    --na-primary-weak:#dbeafe;
+    --na-ring:rgba(37,99,235,.4);
+}
+
 .cercles-container {
-    max-width: 1100px;
+    max-width: 1120px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2rem 1.25rem;
 }
 
 .cercles-container h1 {
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: #2c3e50;
+    font-size: 2.25rem;
+    line-height: 1.1;
+    margin: 0 0 1.25rem 0;
+    color: var(--na-text);
+    letter-spacing: .2px;
 }
+
+.cercles-actions {
+    display: flex;
+    gap: .75rem;
+    justify-content: center;
+    margin: 0 0 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:.6rem 1rem;
+    border-radius:.75rem;
+    border:1px solid transparent;
+    font-weight:600;
+    text-decoration:none;
+    transition:transform .08s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    cursor:pointer;
+}
+.btn:focus{ outline: none; box-shadow: 0 0 0 4px var(--na-ring); }
+.btn-primary{ background: var(--na-primary); color:#fff; }
+.btn-primary:hover{ transform: translateY(-1px); }
+.btn-outline{ background:#fff; color: var(--na-primary); border-color: var(--na-primary); }
+.btn-outline:hover{ background: var(--na-primary-weak); }
 
 .cercles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
 }
 
 .cercle-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: var(--na-card);
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 20px rgba(2,6,23,0.04), 0 2px 6px rgba(2,6,23,0.06);
+    padding: 1rem;
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+    transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.cercle-card:hover{
+    transform: translateY(-4px);
+    border-color:#d1d5db;
+    box-shadow: 0 14px 28px rgba(2,6,23,0.06), 0 4px 10px rgba(2,6,23,0.08);
 }
 
-.cercle-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+.cercle-header{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
 }
-
+.cercle-avatar{
+    width:40px;height:40px;border-radius:12px;
+    background: var(--na-primary-weak);
+    color: var(--na-primary);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+}
 .cercle-card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: #34495e;
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--na-text);
 }
 
-.cercle-card p {
-    color: #555;
-    line-height: 1.4;
+.cercle-desc {
+    color: var(--na-muted);
+    line-height: 1.5;
+    margin:.25rem 0 .5rem 0;
+    min-height: 2.5rem;
+}
+
+.cercle-footer{
+    margin-top:auto;
+}
+.btn-link{
+    color: var(--na-primary);
+    text-decoration:none;
+    font-weight:600;
+}
+.btn-link:hover{ text-decoration:underline; }
+
+.empty{
+    text-align:center;color: var(--na-muted);padding:2rem 0;
 }
 >>>

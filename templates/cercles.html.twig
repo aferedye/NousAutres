@@ -10,12 +10,26 @@
 {% block body %}
 <div class="cercles-container">
     <h1>Nos Cercles</h1>
+
+    <div class="cercles-actions">
+        <a class="btn btn-primary" href="#">Proposer un cercle</a>
+        <a class="btn btn-outline" href="#">Rejoindre un cercle</a>
+    </div>
+
     <div class="cercles-grid">
         {% for cercle in cercles %}
-            <div class="cercle-card">
-                <h2>{{ cercle.nom }}</h2>
-                <p>{{ cercle.description }}</p>
-            </div>
+            <article class="cercle-card" aria-label="Cercle">
+                <header class="cercle-header">
+                    <div class="cercle-avatar" aria-hidden="true">{{ cercle.nom|first|upper }}</div>
+                    <h2>{{ cercle.nom }}</h2>
+                </header>
+                <p class="cercle-desc">{{ cercle.description }}</p>
+                <footer class="cercle-footer">
+                    <a class="btn btn-link" href="#">Voir le cercle</a>
+                </footer>
+            </article>
+        {% else %}
+            <p class="empty">Aucun cercle pour lâ€™instant.</p>
         {% endfor %}
     </div>
 </div>

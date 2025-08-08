@@ -11,10 +11,10 @@ class CircleController extends AbstractController
     #[Route('/cercles', name: 'app_cercles')]
     public function index(): Response
     {
-        // Exemple de donnÃ©es statiques, Ã  remplacer par une vraie rÃ©cupÃ©ration BDD
+        // Donnees statiques de demonstration
         $cercles = [
-            ['nom' => 'Cercle Ã‰thique', 'description' => 'Discussions et actions autour des valeurs fondamentales.'],
-            ['nom' => 'Cercle Ã‰cologie', 'description' => 'Projets liÃ©s Ã  la protection et au respect du vivant.'],
+            ['nom' => 'Cercle Ethique', 'description' => 'Discussions et actions autour des valeurs fondamentales.'],
+            ['nom' => 'Cercle Ecologie', 'description' => 'Projets lies a la protection et au respect du vivant.'],
             ['nom' => 'Cercle Innovation', 'description' => 'Recherche de solutions technologiques et sociales.']
         ];
 
