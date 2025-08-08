@@ -14,11 +14,11 @@
         <div class="flash-error">{{ message }}</div>
     {% endfor %}
 
-    <form method="post" class="confirmation-form" style="max-width: 400px; margin: 2rem auto;">
-        <label for="code">Code reçu par e-mail</label>
-        <input type="text" id="code" name="code" required placeholder="Ex: 482913" />
-
-        <button type="submit" class="cta-button">Confirmer</button>
+    <form method="post">
+        <p>Un e-mail a été envoyé à <strong>{{ email }}</strong>.</p>
+        <label for="confirmation_code">Entrez votre code :</label>
+        <input type="text" name="confirmation_code" id="confirmation_code" required>
+        <button type="submit">Valider</button>
     </form>
 </div>
 {% endblock %}

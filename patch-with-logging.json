@@ -1,0 +1,16 @@
+{
+  "actions": [
+    {
+      "type": "exec",
+      "params": {
+        "cwd": ".",
+        "timeout": 90,
+        "cmd": [
+          "php",
+          "-r",
+          "$base='http://127.0.0.1:8000';function req($method,$url,$payload=null,$accept='application/ld+json'){ $h='Accept: '.$accept.\"\\r\\n\"; if($payload!==null){$h.='Content-Type: application/merge-patch+json' . \"\\r\\n\";} $ctx=['http'=>['method'=>$method,'header'=>$h,'content'=>$payload??'', 'ignore_errors'=>true, 'timeout'=>30]]; $r=@file_get_contents($url,false,stream_context_create($ctx)); $hdrs=$http_response_header??[]; $status=$hdrs[0]??'NO_STATUS'; return [$status,$hdrs,$r, error_get_last()]; } function writeAll($name,$status,$hdrs,$body,$err){ file_put_contents($name.'.status.txt',$status.\"\\n\".implode(\"\\n\",$hdrs)); file_put_contents($name.'.body.json',$body!==false?$body:''); if($err){ file_put_contents($name.'.log.txt', print_r($err,true)); } } /* CERcles */ $id=1; list($s,$h,$b,$e)=req('GET',\"$base/api/cercles/$id\"); if(strpos($s,' 200 ')===false){ list($s,$h,$b,$e)=req('POST',\"$base/api/cercles\", json_encode(['nom'=>'Cercle auto'])); writeAll('cercles-post',$s,$h,$b,$e); $data=@json_decode($b,true); if(isset($data['@id'])){$id=basename($data['@id']);} } list($s,$h,$b,$e)=req('PATCH',\"$base/api/cercles/$id\", json_encode(['nom'=>'Nouveau nom du cercle'])); writeAll('cercles-patch',$s,$h,$b,$e); /* PROJETS */ $id=1; list($s,$h,$b,$e)=req('GET',\"$base/api/projets/$id\"); if(strpos($s,' 200 ')===false){ list($s,$h,$b,$e)=req('POST',\"$base/api/projets\", json_encode(['titre'=>'Titre auto','description'=>'Créé par batch'])); writeAll('projets-post',$s,$h,$b,$e); $data=@json_decode($b,true); if(isset($data['@id'])){$id=basename($data['@id']);} } list($s,$h,$b,$e)=req('PATCH',\"$base/api/projets/$id\", json_encode(['titre'=>'Nouveau titre','description'=>'Maj via PATCH'])); writeAll('projets-patch',$s,$h,$b,$e); /* ECHO_TRACES */ $id=1; list($s,$h,$b,$e)=req('GET',\"$base/api/echo_traces/$id\"); if(strpos($s,' 200 ')===false){ list($s,$h,$b,$e)=req('POST',\"$base/api/echo_traces\", json_encode(['message'=>'Echo auto'])); writeAll('echo_traces-post',$s,$h,$b,$e); $data=@json_decode($b,true); if(isset($data['@id'])){$id=basename($data['@id']);} } list($s,$h,$b,$e)=req('PATCH',\"$base/api/echo_traces/$id\", json_encode(['message'=>'Echo MAJ'])); writeAll('echo_traces-patch',$s,$h,$b,$e); /* VOTES */ $id=1; list($s,$h,$b,$e)=req('GET',\"$base/api/votes/$id\"); if(strpos($s,' 200 ')===false){ list($s,$h,$b,$e)=req('POST',\"$base/api/votes\", json_encode(['valeur'=>0])); writeAll('votes-post',$s,$h,$b,$e); $data=@json_decode($b,true); if(isset($data['@id'])){$id=basename($data['@id']);} } list($s,$h,$b,$e)=req('PATCH',\"$base/api/votes/$id\", json_encode(['valeur'=>1])); writeAll('votes-patch',$s,$h,$b,$e); echo \"DONE\";"
+        ]
+      }
+    }
+  ]
+}

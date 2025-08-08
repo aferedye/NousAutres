@@ -1,0 +1,13 @@
+<h2>Bienvenue {{ pseudo }} !</h2>
+
+<p>Voici votre code de confirmation :</p>
+
+<h1 style="color:#4CAF50;">{{ confirmationCode }}</h1>
+
+<p>Pour confirmer votre compte, cliquez sur le lien ci-dessous :</p>
+
+<p>
+  <a href="{{ url('app_confirm_account', {email: email}) }}">
+    Confirmer mon compte
+  </a>
+</p>

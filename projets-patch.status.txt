@@ -1,0 +1,15 @@
+HTTP/1.1 404 Not Found
+HTTP/1.1 404 Not Found
+Cache-Control: no-cache, private
+Content-Type: application/problem+json; charset=utf-8
+Date: Thu, 07 Aug 2025 22:22:38 GMT
+Link: <http://www.w3.org/ns/hydra/error>; rel="http://www.w3.org/ns/json-ld#error",<http://127.0.0.1:8000/api/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+Vary: Accept
+X-Content-Type-Options: nosniff
+X-Debug-Token: d73170
+X-Debug-Token-Link: http://127.0.0.1:8000/_profiler/d73170
+X-Frame-Options: deny
+X-Powered-By: PHP/8.4.10
+X-Previous-Debug-Token: 2edc5a
+X-Robots-Tag: noindex
+Connection: close
