@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Entity;
 
@@ -109,4 +109,3 @@ class Circle
         ];
     }
 }
-

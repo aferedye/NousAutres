@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Controller;
 
@@ -25,4 +25,3 @@ class CircleController extends AbstractController
         ]);
     }
 }
-

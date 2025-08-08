@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Repository;
 
@@ -29,4 +29,3 @@ class CircleRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 }
-

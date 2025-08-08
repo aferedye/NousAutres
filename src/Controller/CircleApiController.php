@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Controller;
 
@@ -82,4 +82,3 @@ class CircleApiController extends AbstractController
         return $this->json(null, 204);
     }
 }
-
